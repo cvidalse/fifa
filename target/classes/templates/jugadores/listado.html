@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <title th:text="${titulo}">Title</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/jugadores.css">
+    <script> function valor(){alert("funcion en mantenimiento");} </script>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm bg-dark">
+    <a class="navbar-brand" href="https://www.ea.com/es-mx/games/fifa/fifa-19/buy/pc"> <img src="/img/fifa-19-logo.jpg" alt="logo"></a>
+</nav>
+
+<form class="form class" method="POST" action="/club">
+    <label for="club" > Buscar por club:</label>
+    <input type="search" class="form-control" id="club" name="club" required>
+</form>
+
+
+<table class="table table-bordered">
+    <tr>
+        <th>Nombre</th>
+        <th>Fotografia</th>
+        <th>Nacionalidad</th>
+        <th style="cursor: pointer;" onclick="valor()">Rating
+            <form  action="/listado" id="form" method="POST">
+                <input type="hidden" id="orden" name="orden" th:value="${ordenado}"/>
+            </form>
+        </th>
+        <th>Edad</th>
+        <th>Club</th>
+    </tr>
+    <tr th:each="d : ${jugadores}">
+        <td th:text="${d.nombre}"></td>
+        <td>
+        <p>
+            <img th:src="${d.fotografia}" alt="DON'T FORGET THIS">
+        </p>
+        </td>
+        <td th:text="${d.nacionalidad}"></td>
+        <td th:text="${d.rating}"></td>
+        <td th:text="${d.edad}"></td>
+        <td th:text="${d.Club}"></td>
+        <td>
+            <a th:href="@{'/'+${d.nombre}+'/estadisticas'}" class="btn btn-primary btn-sm">Estadisticas</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,11 @@
+    .form.class{
+            width: 100%;
+            position: absolute;
+            top:80px;
+    }
+
+    .table.table-bordered{
+          z-index: 0;
+          position: absolute;
+          top: 155px;
+    }
