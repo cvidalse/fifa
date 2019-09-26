@@ -8,8 +8,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class ManejoDato {
 
@@ -106,6 +105,51 @@ public class ManejoDato {
 			}
 		}
 		return jug;
+	}
+
+	public List clubes(MyLinkedList<Jugador> jugadores){
+		HashMap<String,Integer> resumen = new HashMap<>();
+		Iterator<Jugador> itr = jugadores.iterator();
+		while (itr.hasNext()) {
+			Jugador jugador = itr.next();
+			if(resumen.containsKey(jugador.getClub())){//si el codigo ya paso le suma 1 a la cantidad de aparacicones
+				resumen.put(jugador.getClub(),resumen.get(jugador.getClub())+1);
+			}else{//sino lo crea
+				resumen.put(jugador.getClub(),1);
+			}
+		}
+
+		return generarLista(resumen);
+	}
+
+	private  List<DataClub> generarLista(HashMap<String, Integer> resumenDocumento){
+		ArrayList<DataClub> resumen = new ArrayList<>();
+		resumenDocumento.forEach((k,v)-> resumen.add(new DataClub(k,v)));
+		return resumen;
+	}
+
+	public MyLinkedList<Jugador> leerDatos(String path, int parseInt) {
+		MyLinkedList<Jugador> jugadores= new MyLinkedList<>();
+		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+			String line;
+			int i = 0;
+			while ((line = br.readLine()) != null && i<parseInt) {
+				if (i > 1) {
+					String[] values = line.split(",");
+					System.out.println(values.length);
+					jugadores.add(new Jugador(values[2],values[4],values[5],Integer.parseInt(values[7]),Integer.parseInt(values[3]),values[9]));
+				}
+				i++;
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return jugadores;
+
+
+
 	}
 /*
 	public List<Jugador> ordenarRatingDesc(List<Jugador> jugadores){

@@ -37,6 +37,24 @@ public class JugadoresController {
 		}
 	}
 
+	@RequestMapping(value= "/resumen", method = RequestMethod.GET)
+	public String resumen(Model modelo) {
+		modelo.addAttribute("titulo","Jugadores en el top por equipo");
+		modelo.addAttribute("numero", "90");
+		return "resumen/pie";
+	}
+
+	@RequestMapping(value= "/resumen", method = RequestMethod.POST)
+	public String resumen(@RequestParam String numero,Model modelo){
+		ManejoDato md = new ManejoDato();
+		Jugadores jg = new Jugadores(md.leerDatos(path, Integer.parseInt(numero)));
+		modelo.addAttribute("titulo","Jugadores en el top "+numero+" por equipo");
+		modelo.addAttribute("data", md.clubes(jg.getJugadores()));
+		modelo.addAttribute("numero",numero);
+		return "resumen/pie";
+	}
+
+
  /*
 	@RequestMapping(value = "/listado", method = RequestMethod.POST)
 	public String ordenarRating(Model modelo, @RequestParam("orden") boolean orden){

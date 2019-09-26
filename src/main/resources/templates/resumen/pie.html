@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Load d3.js -->
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+ <link rel="stylesheet" href="css/main.css">
+
+    <script th:inline="javascript">
+    var datos = [[${data}]];
+</script>
+    <script>
+function generarGrafico(fifadata){
+var svg = d3.select("svg") .remove();
+var margin  = {top: 20, right: 20, bottom: 100, left: 60},
+        width   = 600 - margin.left - margin.right,
+        height  = 480 - margin.top - margin.bottom,
+        x       = d3.scale.ordinal().rangeRoundBands([0,width], 0.5),
+        y       = d3.scale.linear().range([height,0]);
+
+//draw axis
+    var xAxis   = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+	var yAxis   = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(5)
+        .innerTickSize(-width)
+        .outerTickSize(0)
+        .tickPadding(10);
+
+ var svg     = d3.select("#fifa_stats")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .attr("overflow","visible")
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+        x.domain(fifadata.map(function (d)
+        {
+            return d.nombreClub;
+        }));
+
+        y.domain([0, d3.max(fifadata, function (d)
+        {
+            return d.nJugadores;
+        })]);
+
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0, " + (height) + ")")
+            .call(xAxis)
+            .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.5em")
+            .attr("dy", "-.55em")
+            .attr("y", 10)
+            .attr("x",-10)
+            .attr("font-size", 8) 
+            .attr("transform", "rotate(270)")
+
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 5)
+            .attr("dy", "0.8em")
+            .attr("text-anchor", "end")
+            .text("Numero de jugadores");
+
+        svg.selectAll("bar")
+            .data(fifadata)
+            .enter()
+            .append("rect")
+            .style("fill", "orange")
+            .attr("x", function(d)
+            {
+                return x(d.nombreClub);
+            })
+            .attr("width", x.rangeBand())
+            .attr("y", function (d)
+            {
+                return y(d.nJugadores);
+            })
+            .attr("height", function (d)
+            {
+                return height - y(d.nJugadores);
+            });
+		
+}
+
+</script>
+</head>
+<body onload="generarGrafico(datos)">
+<nav class="navbar navbar-expand-sm bg-dark">
+    <a class="navbar-brand" href="https://www.ea.com/es-mx/games/fifa/fifa-19/buy/pc"> <img src="/img/fifa-19-logo.jpg" alt="logo"></a>
+    <a class="btn btn-success btn-sm" href="/listado"> Listado </a>
+</nav>
+
+<div class="row">
+    <div class="container col-lg-4">
+        <h2 th:text="${titulo}"></h2><br>
+        <form class="form class" method="POST" action="/resumen">
+            <label for="numero" > Buscar por club:</label>
+            <input type="search" class="form-control" pattern="[0-9]{3}" id="numero" name="numero" th:value="${numero}" required>
+        </form>
+</div>
+<div id="fifa_stats" class="container overflow-visible col-lg-8"></div>
+</div>
+</body>
+</html>
